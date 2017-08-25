@@ -11,7 +11,6 @@ virtualenv -p python3 venv
 . venv/bin/activate
 ```
 
-
 Deploy
 ------
 Build docker image and push to Google container registry
