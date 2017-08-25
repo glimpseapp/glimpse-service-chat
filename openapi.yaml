@@ -1,0 +1,158 @@
+swagger: '2.0'
+info:
+  description: Manage the chats and messages
+  title: Glimpse Service Chat
+  version: 0.0.1-alpha
+host: chat.glimpse.online
+basePath: /
+consumes:
+- application/json
+produces:
+- application/json
+schemes:
+- http
+paths:
+
+  "/healthz":
+    get:
+      description: Check the health of the service
+      operationId: Healthz
+      responses:
+        200:
+          description: Service is healthy
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+
+  "/chat":
+    post:
+      description: Open a chat
+      operationId: PostChats
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/PostChatParameters"
+      responses:
+        200:
+          description: Message sent
+          schema:
+            $ref: "#/definitions/PostChatResponse"
+
+  "/chats/{userId}":
+    get:
+      description: Get the list of chats for this user
+      operationId: GetChatList
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        type: string
+        description: Id of the user
+      responses:
+        200:
+          description: List of chats
+          schema:
+            $ref: "#/definitions/ChatListResponse"
+
+  "/chat/message":
+    post:
+      description: Send a message to a chat
+      operationId: PostChatMessage
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/ChatMessageParameters"
+      responses:
+        200:
+          description: Message Sent
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+
+definitions:
+  SuccessResponse:
+    type: object
+    properties:
+      status:
+        type: boolean
+
+  PostChatParameters:
+    type: object
+    properties:
+      chat_name:
+        description: Name of the chat
+        type: string
+      user_ids:
+        description: Array of user ids
+        type: array
+        items:
+          $ref: "#/definitions/UserIds"
+
+  UserIds:
+    description: User Id
+    type: string
+
+  PostChatResponse:
+    type: object
+    description: Return the chat_id of the chat just created
+    properties:
+      chat_id:
+        type: string
+        description: Id of the chat just created
+
+  ChatListResponse:
+    type: object
+    properties:
+      chats:
+        type: array
+        description: List of chats
+        items:
+          $ref: "#/definitions/ChatList"
+
+  ChatList:
+    type: object
+    properties:
+      chat_id:
+        type: string
+        description: Id of this chat
+      chat_name:
+        type: string
+        description: Name of the chat
+
+  ChatMessageParameters:
+    type: object
+    properties:
+      user_id:
+        description: UserId of the sender
+        type: string
+      chat_id:
+        description: ChatId where to send the message
+        type: string
+      message:
+        description: Text message
+        type: string
+      asset:
+        $ref: "#/definitions/MessageAssetName"
+
+  MessageAssetName:
+    description: Information of the asset submitted
+    type: object
+    properties:
+      asset_name:
+        description: Name of the asset sent in the message
+        type: string
+
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: key
+    in: query
+
+  firebase:
+    authorizationUrl: ""
+    flow: implicit
+    type: oauth2
+    x-google-issuer: "https://securetoken.google.com/glimpse-123456"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
