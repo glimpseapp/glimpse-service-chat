@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: glimpse-service-chat
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: glimpse-service-chat
+    spec:
+      containers:
+      - name: esp
+        image: gcr.io/endpoints-release/endpoints-runtime:1
+        args: [
+          "-p", "8081",
+          "-a", "127.0.0.1:5000",
+          "-s", "chat.glimpse.online",
+          "-v", "2017-08-25r3",
+        ]
+        ports:
+          - containerPort: 8081
+      - name: chat
+        image: gcr.io/glimpse-123456/glimpse-service-chat:latest
+        ports:
+          - containerPort: 5000
+        env:
+        - name: CASSANDRA_HOSTS
+          value: cassandra
+        - name: GLIMPSE_SERVICE_ASSET
+          value: http://glimpse-service-asset # internal name for the service
+        - name: MESSAGE_SENT_TOPIC
+          value: message-sent
