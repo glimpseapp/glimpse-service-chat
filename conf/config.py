@@ -8,6 +8,6 @@ CASSANDRA_HOSTS = os.getenv("CASSANDRA_HOSTS", None)
 if isinstance(CASSANDRA_HOSTS, str):
     CASSANDRA_HOSTS = CASSANDRA_HOSTS.split(',')
 
-MESSAGE_KEYSPACE = "chat"
+CHAT_KEYSPACE = "chat"
 
 CHAT_CREATED_TOPIC = os.getenv("CHAT_CREATED_TOPIC", "chat-created")

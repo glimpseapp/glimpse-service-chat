@@ -55,7 +55,23 @@ paths:
           schema:
             $ref: "#/definitions/ChatListResponse"
 
-  "/chat/message":
+  "/messages/{chatId}":
+    get:
+      description: Get the messages in a chat
+      operationId: GetChatMessages
+      parameters:
+      - in: path
+        name: chatId
+        required: true
+        type: string
+        description: Id of the chat
+      responses:
+        200:
+          description: List of messages
+          schema:
+            $ref: "#/definitions/ChatMessagesResponse"
+
+  "/message":
     post:
       description: Send a message to a chat
       operationId: PostChatMessage
@@ -124,8 +140,8 @@ definitions:
   ChatMessageParameters:
     type: object
     properties:
-      user_id:
-        description: UserId of the sender
+      autho_id:
+        description: Author ID of the sender
         type: string
       chat_id:
         description: ChatId where to send the message
@@ -143,6 +159,29 @@ definitions:
       asset_name:
         description: Name of the asset sent in the message
         type: string
+
+  ChatMessagesResponse:
+    type: object
+    properties:
+      chat_id:
+        type: string
+        description: ChatId of the current chat
+      author_id:
+        type: string
+        description: Author Id who sent the message
+      message:
+        type: string
+        description: Message sent
+      time:
+        type: string
+        description: Time the message was sent
+      asset_name:
+        description: Name of the asset in the message
+        type: string
+      asset_url:
+        description: URL of the asset in the message
+        type: string
+
 
 securityDefinitions:
   api_key:

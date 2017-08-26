@@ -1,7 +1,9 @@
 import time
+import uuid
+
 from cassandra.cqlengine import columns
 from cassandra.cqlengine.models import Model
-from cassandra.util import datetime_from_timestamp
+from cassandra.util import datetime_from_timestamp, uuid_from_time, datetime_from_uuid1
 
 
 def date_now():
@@ -39,20 +41,18 @@ class ChatByUserId(Model):
 
 
 class ChatMessageByChatId(Model):
-
     chat_id = columns.Text(primary_key=True)
-    message_id = columns.TimeUUID(default=date_now)
+    message_id = columns.TimeUUID()
     author_id = columns.Text()
-    content = columns.Text()
+    message = columns.Text()
     asset_name = columns.Text()
-    time = columns.DateTime(default=date_now)  # rename to creation_date
 
     def to_object(self):
         return {
             'chat_id': self.chat_id,
             'message_id': str(self.message_id),
             'author_id': self.author_id,
-            'content': self.content,
+            'message': self.message,
             'asset_name': self.asset_name,
-            'time': self.time.isoformat(),
+            'time': datetime_from_uuid1(self.message_id).isoformat()
         }
