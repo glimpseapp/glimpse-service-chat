@@ -94,7 +94,7 @@ class GetChatMessages(Resource):
 
         return {
             "tot": len(message_list),
-            "requests": message_list
+            "messages": message_list
         }
 
 
