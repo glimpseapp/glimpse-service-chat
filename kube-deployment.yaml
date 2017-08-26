@@ -29,5 +29,5 @@ spec:
           value: cassandra
         - name: GLIMPSE_SERVICE_ASSET
           value: http://glimpse-service-asset # internal name for the service
-        - name: MESSAGE_SENT_TOPIC
-          value: message-sent
+        - name: CHAT_CREATED_TOPIC
+          value: chat-created
