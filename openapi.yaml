@@ -39,12 +39,12 @@ paths:
           schema:
             $ref: "#/definitions/PostChatResponse"
 
-  "/chats/{userId}":
+  "/chats":
     get:
       description: Get the list of chats for this user
       operationId: GetChatList
       parameters:
-      - in: path
+      - in: header
         name: userId
         required: true
         type: string
@@ -140,9 +140,6 @@ definitions:
   ChatMessageParameters:
     type: object
     properties:
-      autho_id:
-        description: Author ID of the sender
-        type: string
       chat_id:
         description: ChatId where to send the message
         type: string
@@ -195,3 +192,4 @@ securityDefinitions:
     type: oauth2
     x-google-issuer: "https://securetoken.google.com/glimpse-123456"
     x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "glimpse-123456"

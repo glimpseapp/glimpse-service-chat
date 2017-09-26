@@ -12,6 +12,7 @@ from conf.config import CASSANDRA_HOSTS, CHAT_KEYSPACE, CHAT_CREATED_TOPIC
 from google.cloud import pubsub
 
 from model.chat import ChatByChatId, ChatByUserId, ChatMessageByChatId
+from service.common import get_user_id_from_jwt
 
 
 class CreateChat(Resource):
@@ -67,9 +68,9 @@ class CreateChat(Resource):
 
 
 class GetChatList(Resource):
-    def get(self, user_id):
+    def get(self):
+        user_id = get_user_id_from_jwt()
         connection.setup(hosts=CASSANDRA_HOSTS, default_keyspace=CHAT_KEYSPACE)
-
         chat_rows = ChatByUserId.filter(user_id=user_id)
 
         chat_list = []
@@ -100,9 +101,9 @@ class GetChatMessages(Resource):
 
 class WriteMessage(Resource):
     def post(self):
+        author_id = get_user_id_from_jwt()
         data = request.get_json(silent=True)
 
-        author_id = data.get('author_id')
         chat_id = data.get('chat_id')
         message = data.get('message')
         message_id = str(uuid_from_time(time.time()))
