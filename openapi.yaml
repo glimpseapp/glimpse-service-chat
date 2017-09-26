@@ -181,11 +181,6 @@ definitions:
 
 
 securityDefinitions:
-  api_key:
-    type: apiKey
-    name: key
-    in: query
-
   firebase:
     authorizationUrl: ""
     flow: implicit
