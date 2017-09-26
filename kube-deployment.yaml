@@ -24,6 +24,10 @@ spec:
         image: gcr.io/glimpse-123456/glimpse-service-chat:latest
         ports:
           - containerPort: 5000
+        volumeMounts:
+        - name: credentials-volume
+          mountPath: /secrets/google_credentials
+          readOnly: true
         env:
         - name: CASSANDRA_HOSTS
           value: cassandra
@@ -31,3 +35,10 @@ spec:
           value: http://glimpse-service-asset # internal name for the service
         - name: CHAT_CREATED_TOPIC
           value: chat-created
+        - name: GOOGLE_INTERNAL_API_CREDENTIALS
+          value: /secrets/google_credentials/internal-credentials.json
+
+      volumes:
+      - name: credentials-volume
+        secret:
+          secretName: internal-api-credentials

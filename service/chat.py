@@ -43,7 +43,7 @@ class CreateChat(Resource):
                 user_id=user_id,
                 chat_name=chat_name,
             )
-            self._chat_created(chat_id, user_id)
+            #self._chat_created(chat_id, user_id)
 
         return {
             "success": True,
@@ -118,7 +118,7 @@ class WriteMessage(Resource):
             asset_name=asset_name,
         )
 
-        self._message_sent(chat_id, author_id, message, asset_name)
+        #self._message_sent(chat_id, author_id, message, asset_name)
 
         return {
             "success": True
