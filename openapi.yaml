@@ -179,6 +179,8 @@ definitions:
         description: URL of the asset in the message
         type: string
 
+security:
+  - firebase: []
 
 securityDefinitions:
   firebase:

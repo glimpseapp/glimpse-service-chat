@@ -105,9 +105,9 @@ class WriteMessage(Resource):
         data = request.get_json(silent=True)
 
         chat_id = data.get('chat_id')
-        message = data.get('message')
+        message = data.get('message', '')
         message_id = str(uuid_from_time(time.time()))
-        asset_name = data.get('asset_name')
+        asset_name = data.get('asset_name', '')
 
         connection.setup(hosts=CASSANDRA_HOSTS, default_keyspace=CHAT_KEYSPACE)
 
