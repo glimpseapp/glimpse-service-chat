@@ -1,5 +1,4 @@
 import json
-import uuid
 
 import time
 from cassandra.cqlengine import connection
@@ -78,8 +77,8 @@ class GetChatList(Resource):
             chat_list.append(chat.to_object())
 
         return {
-            "tot": len(chat_list),
-            "requests": chat_list
+            "results": len(chat_list),
+            "chats": chat_list
         }
 
 
@@ -91,10 +90,12 @@ class GetChatMessages(Resource):
 
         message_list = []
         for message in message_rows:
-            message_list.append(message.to_object())
+            message_object = message.to_object()
+            message_object['meta_data'] = json.loads(message_object['meta_data'])
+            message_list.append(message_object)
 
         return {
-            "tot": len(message_list),
+            "results": len(message_list),
             "messages": message_list
         }
 
@@ -102,34 +103,57 @@ class GetChatMessages(Resource):
 class WriteMessage(Resource):
     def post(self):
         author_id = get_user_id_from_jwt()
+
         data = request.get_json(silent=True)
 
+        type = data.get('type', 'text')
         chat_id = data.get('chat_id')
-        message = data.get('message', '')
         message_id = str(uuid_from_time(time.time()))
+        text = data.get('text', '')
         asset_name = data.get('asset_name', '')
-
+        meta_data = data.get('meta_data', {})
         connection.setup(hosts=CASSANDRA_HOSTS, default_keyspace=CHAT_KEYSPACE)
+
+        if type not in ChatMessageByChatId.allowed_type:
+            return make_response("Type not allowed. Only allowed type: " + ChatMessageByChatId.allowed_type, 403)
+
+        if type == 'glimpse':
+            seconds_allowed = meta_data.get('seconds_allowed', 10)
+            effect = meta_data.get('effect')
+            meta_data = {
+                'seconds_allowed': seconds_allowed,
+                'effect': effect
+            }
+
+        elif type == 'glimpse_narrative':
+            path_id = meta_data.get('path_id')
+            meta_data = {
+                'path_id': path_id,
+            }
+
+        meta_data = json.dumps(meta_data)
 
         ChatMessageByChatId.create(
             chat_id=chat_id,
             message_id=message_id,
             author_id=author_id,
-            message=message,
+            type=type,
+            text=text,
             asset_name=asset_name,
+            meta_data=meta_data,
         )
 
-        #self._message_sent(chat_id, author_id, message, asset_name)
+        #self._message_sent(chat_id, author_id, text, asset_name)
 
         return {
             "success": True
         }
 
     @staticmethod
-    def _message_sent(chat_id, author_id, message, asset_name):
+    def _message_sent(chat_id, author_id, text, asset_name):
         chat_object = {
             "chat_id": chat_id,
             "author_id": author_id,
-            "message": message,
-            "asset_name": asset_name
+            "text": text,
+            "asset_name": asset_name,
         }

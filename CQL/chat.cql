@@ -23,7 +23,9 @@ CREATE TABLE chat.chat_message_by_chat_id (
   message_id timeuuid,
   asset_name TEXT,
   author_id TEXT,
-  message TEXT,
+  type TEXT,
+  text TEXT,
+  meta_data TEXT,
 
   PRIMARY KEY (chat_id, message_id)
 ) WITH CLUSTERING ORDER BY (message_id DESC);

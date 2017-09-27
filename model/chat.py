@@ -44,15 +44,21 @@ class ChatMessageByChatId(Model):
     chat_id = columns.Text(primary_key=True)
     message_id = columns.TimeUUID()
     author_id = columns.Text()
-    message = columns.Text()
+    text = columns.Text()
     asset_name = columns.Text()
+    type = columns.Text()
+    meta_data = columns.Text()
+
+    allowed_type = ['text', 'glimpse', 'glimpse_narrative', 'image']
 
     def to_object(self):
         return {
             'chat_id': self.chat_id,
             'message_id': str(self.message_id),
             'author_id': self.author_id,
-            'message': self.message,
+            'time': datetime_from_uuid1(self.message_id).isoformat(),
+            'type': self.type,
+            'text': self.text,
             'asset_name': self.asset_name,
-            'time': datetime_from_uuid1(self.message_id).isoformat()
+            'meta_data': self.meta_data
         }

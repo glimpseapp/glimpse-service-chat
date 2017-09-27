@@ -11,7 +11,7 @@ api = Api(app)
 
 api.add_resource(Healthz, '/healthz')
 api.add_resource(CreateChat, '/chat')
-api.add_resource(GetChatList, '/chats/<user_id>')
+api.add_resource(GetChatList, '/chats')
 api.add_resource(GetChatMessages, '/messages/<chat_id>')
 api.add_resource(WriteMessage, '/message')
 
